@@ -5,7 +5,8 @@ import javax.mail.internet._
 object Starter extends App {
 
   //generateAndSendEmail()
-  ProfileTrans.trans("C:\\Users\\Администратор\\Desktop\\rmz — копия\\Профиль №1 0112068115 с 04 12 15 по 10 12 15.txt")
+  ProfileTrans.trans("C:\\Users\\Администратор\\Desktop\\rmz — копия\\Профиль №1 0112068115 с 04 12 15 по 10 12 15.txt",
+    "C:\\Users\\Администратор\\Desktop\\rmz — копия\\")
   def generateAndSendEmail() {
     // Step1
     System.out.println("\n 1st ===> setup Mail Server Properties..")

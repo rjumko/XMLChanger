@@ -3,7 +3,7 @@
   */
 object ProfileTrans {
 
-  def trans(sourceFile: String): Unit = {
+  def trans(sourceFile: String, outputDir: String): Unit = {
     val t1 = "Профиль с "
     val t1_1 = " по "
     val t2 = "Счетчик № "
@@ -28,7 +28,7 @@ object ProfileTrans {
     {
       val date = "\\d\\d\\.\\d\\d\\.\\d\\d".r.findFirstIn(i(0)).get
       val header = List(t1 + date + t1_1 + date, t2 + meterNumber, t3, t4, t5)
-      val n = scala.tools.nsc.io.File("C:\\Users\\Администратор\\Desktop\\rmz — копия\\Профиль счетчика № "+meterNumber+" за "+date+".txt")
+      val n = scala.tools.nsc.io.File(outputDir+"Профиль счетчика № "+meterNumber+" за "+date+".txt")
       n.writeAll(header.mkString("\r\n") + "\r\n" + i.mkString("\r\n"))
     })
   }
