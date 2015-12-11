@@ -15,6 +15,7 @@ libraryDependencies := {
         //"org.scala-lang.modules" %% "scala-parser-combinators" % "1.0.4",
         //"org.scala-lang.modules" %% "scala-swing" % "1.0.1",
         "org.scala-lang" % "scala-compiler" % scalaVersion.value,
+        "com.typesafe.akka" %% "akka-actor" % "2.4.1",
         "javax.mail" % "javax.mail-api" % "1.5.4")
     case _ =>
       // or just libraryDependencies.value if you don't depend on scala-swing
