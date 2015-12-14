@@ -1,10 +1,15 @@
+import java.io.File
 import javax.mail._
 import javax.mail.internet._
+
+import com.typesafe.config.ConfigFactory
+
+import scala.util.Try
 
 
 object Starter extends App {
 
-
+  val conf = ConfigFactory.load()
 
   //System.setProperty("simple-lib.whatever", "This value comes from a system property")
 
@@ -12,27 +17,34 @@ object Starter extends App {
   //val parsedConfig = ConfigFactory.parseFile(new File("src/main/resources/application.conf"))
 
 
-  XMLChanger
-  //generateAndSendEmail()
+  def getListFiles(directoryName: String): Array[String] =
+    new File(directoryName).listFiles.map(_.getAbsolutePath)
+
+  def mv(oldName: String, newName: String) = {
+    Try(new File(oldName).renameTo(new File(newName))).getOrElse(false)}
+
+  //XMLChanger
+  generateAndSendEmail()
  /* ProfileTrans.trans("C:\\Users\\Администратор\\Desktop\\rmz — копия\\Профиль №1 0112068115 с 04 12 15 по 10 12 15.txt",
     "C:\\Users\\Администратор\\Desktop\\rmz — копия\\")*/
   def generateAndSendEmail() {
     // Step1
     System.out.println("\n 1st ===> setup Mail Server Properties..")
     val mailServerProperties = System.getProperties()
-    mailServerProperties.put("mail.smtp.port", "587")
+    //mailServerProperties.put("mail.smtp.port", "587")
     mailServerProperties.put("mail.smtp.auth", "true")
-    mailServerProperties.put("mail.smtp.starttls.enable", "true")
+    //mailServerProperties.put("mail.smtp.starttls.enable", "true")
     System.out.println("Mail Server Properties have been setup successfully..")
     // Step2
     System.out.println("\n\n 2nd ===> get Mail Session..")
+    println(conf.getString("MailSender.sendFolder"))
     val getMailSession = Session.getDefaultInstance(mailServerProperties, null)
     val generateMailMessage = new MimeMessage(getMailSession)
-    generateMailMessage.setFrom(new InternetAddress("rjumko@gmail.com"))
-    generateMailMessage.addRecipient(Message.RecipientType.TO, new InternetAddress("romann631@gmail.com"))
-    generateMailMessage.addRecipient(Message.RecipientType.CC, new InternetAddress("rjumko@gmail.com"))
+    generateMailMessage.setFrom(new InternetAddress(conf.getString("MailSender.user")))
+    generateMailMessage.addRecipient(Message.RecipientType.TO, new InternetAddress(conf.getString("MailSender.to").split(';').head))
+    generateMailMessage.addRecipient(Message.RecipientType.CC, new InternetAddress(conf.getString("MailSender.to").split(';').last))
     generateMailMessage.setSubject("Greetings from Crunchify..")
-    val emailBody = "Test email by Crunchify.com JavaMail API example. " + "<br><br> Regards, <br>Crunchify Admin";
+    val emailBody = "Test email by Crunchify.com JavaMail API example. " + "<br><br> Regards, <br>Crunchify Admin"
     val attachment = new MimeBodyPart()
     val multipart = new MimeMultipart()
     attachment.attachFile("C:\\Users\\Администратор\\Documents\\xmlch\\xmlchanger\\80020_7722245108_20151207_32984_4200003300.xml")
@@ -43,7 +55,7 @@ object Starter extends App {
     System.out.println("\n\n 3rd ===> Get Session and Send mail")
     try {
       val transport = getMailSession.getTransport("smtp")
-      transport.connect("smtp.gmail.com", "rjumko@gmail.com", "jhpyP5nFa7Cj")
+      transport.connect(conf.getString("MailSender.host"), conf.getString("MailSender.user"), conf.getString("MailSender.password"))
       transport.sendMessage(generateMailMessage, generateMailMessage.getAllRecipients())
       transport.close();
     }

@@ -12,12 +12,6 @@ import javax.mail
 
 object XMLChanger {
 
-  def getListFiles(directoryName: String): Array[String] =
-    new File(directoryName).listFiles.map(_.getAbsolutePath)
-
-  def mv(oldName: String, newName: String) = {
-    Try(new File(oldName).renameTo(new File(newName))).getOrElse(false)}
-
   def convert(XMLfile: Elem): Unit = {
     val messageNumber = ((XMLfile \\ "message" \ "@number").text.toInt+10000).toString
     val format = "80020"
@@ -87,9 +81,9 @@ object XMLChanger {
   val conf = ConfigFactory.load()
   println("The answer is: " + conf.getInt("simple-app.answer"))
 
-  getListFiles(conf.getString("XML.inputFolder")).foreach({i =>
+  Starter.getListFiles(conf.getString("XML.inputFolder")).foreach({i =>
     convert(XML.loadString(XML.loadFile(i).toString()));
-    mv(i, conf.getString("XML.storedFolder")+i.split('\\').last)
+    Starter.mv(i, conf.getString("XML.storedFolder")+i.split('\\').last)
   })
 
 
