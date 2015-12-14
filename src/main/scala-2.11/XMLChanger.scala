@@ -12,18 +12,18 @@ import javax.mail
 
 object XMLChanger {
 
-  def getListFiles(directoryName: String): Array[String] = {
-    return (new File(directoryName)).listFiles.map(_.getName)
-  }
+  def getListFiles(directoryName: String): Array[String] =
+    new File(directoryName).listFiles.map(_.getAbsolutePath)
 
-  def mv(oldName: String, newName: String) =
-    Try(new File(oldName).renameTo(new File(newName))).getOrElse(false)
-  def convert: Unit = {
-    val messageNumber = ((xml \\ "message" \ "@number").text.toInt+10000).toString
+  def mv(oldName: String, newName: String) = {
+    Try(new File(oldName).renameTo(new File(newName))).getOrElse(false)}
+
+  def convert(XMLfile: Elem): Unit = {
+    val messageNumber = ((XMLfile \\ "message" \ "@number").text.toInt+10000).toString
     val format = "80020"
     val inn = "7722245108"
     val innTEU = "4200003300"
-    val date = (xml \\ "message" \ "datetime" \ "day").text
+    val date = (XMLfile \\ "message" \ "datetime" \ "day").text
     val psFSKEESMES =
       List(  "422070134107101" -> "ПС \"Распадская-3\", 110/35/6 кВ, ОРУ-110 кВ, ввод Т-1",
         "422070134107201" -> "ПС \"Распадская-3\", 110/35/6 кВ, ОРУ-110 кВ, ввод Т-2",
@@ -48,7 +48,7 @@ object XMLChanger {
         "422080086108101" -> "ПС Клетьевая, 35/6 кВ, ОРУ-35 кВ, ввод Т-1",
         "422080086108201" -> "ПС Клетьевая, 35/6 кВ, ОРУ-35 кВ, ввод Т-2",
         "422080086214101" -> "ПС Клетьевая, 35/6 кВ, РУ-6 кВ, ф.яч.17")
-    val result1 = xml \\ "message" \ "area" \ "measuringpoint"
+    val result1 = XMLfile \\ "message" \ "area" \ "measuringpoint"
     var results:NodeSeq = null
     def searchPS(ps:String):NodeSeq = {
       result1.foreach((e) =>
@@ -62,7 +62,7 @@ object XMLChanger {
     }
     val xmlOut =
       <message class="80020" number={messageNumber} version="2">
-        {xml \\ "datetime"}
+        {XMLfile \\ "datetime"}
         <sender>
           <inn>7722245108</inn>
           <name>ООО {scala.xml.Unparsed(""""Мечел-Энерго"""")}</name>
@@ -87,8 +87,14 @@ object XMLChanger {
 
   val conf = ConfigFactory.load()
   println("The answer is: " + conf.getInt("simple-app.answer"))
-  val xml = XML.loadString(XML.loadFile(conf.getString("XML.inputFolder") +
+
+  getListFiles(conf.getString("XML.inputFolder")).foreach({i =>
+    convert(XML.loadString(XML.loadFile(i).toString()));
+    mv(i, conf.getString("XML.storedFolder")+i.split('\\').last)
+    println(i.split('\\').last)
+  })
+
+  /*val xml = XML.loadString(XML.loadFile(conf.getString("XML.inputFolder") +
     "80020_7722245108_20151208_33014_4200003300.xml").toString())
-
-
+  convert(xml)*/
 }

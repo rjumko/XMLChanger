@@ -14,8 +14,8 @@ object Starter extends App {
 
   XMLChanger
   //generateAndSendEmail()
-  ProfileTrans.trans("C:\\Users\\Администратор\\Desktop\\rmz — копия\\Профиль №1 0112068115 с 04 12 15 по 10 12 15.txt",
-    "C:\\Users\\Администратор\\Desktop\\rmz — копия\\")
+ /* ProfileTrans.trans("C:\\Users\\Администратор\\Desktop\\rmz — копия\\Профиль №1 0112068115 с 04 12 15 по 10 12 15.txt",
+    "C:\\Users\\Администратор\\Desktop\\rmz — копия\\")*/
   def generateAndSendEmail() {
     // Step1
     System.out.println("\n 1st ===> setup Mail Server Properties..")
