@@ -5,6 +5,7 @@ import javax.mail.internet._
 import com.typesafe.config.ConfigFactory
 
 import scala.util.Try
+import scala.xml.XML
 
 
 object Starter extends App {
@@ -37,7 +38,6 @@ object Starter extends App {
     System.out.println("Mail Server Properties have been setup successfully..")
     // Step2
     System.out.println("\n\n 2nd ===> get Mail Session..")
-    println(conf.getString("MailSender.sendFolder"))
     val getMailSession = Session.getDefaultInstance(mailServerProperties, null)
     val generateMailMessage = new MimeMessage(getMailSession)
     generateMailMessage.setFrom(new InternetAddress(conf.getString("MailSender.user")))
@@ -45,10 +45,12 @@ object Starter extends App {
     generateMailMessage.addRecipient(Message.RecipientType.CC, new InternetAddress(conf.getString("MailSender.to").split(';').last))
     generateMailMessage.setSubject("Greetings from Crunchify..")
     val emailBody = "Test email by Crunchify.com JavaMail API example. " + "<br><br> Regards, <br>Crunchify Admin"
-    val attachment = new MimeBodyPart()
     val multipart = new MimeMultipart()
-    attachment.attachFile("C:\\Users\\Администратор\\Documents\\xmlch\\xmlchanger\\80020_7722245108_20151207_32984_4200003300.xml")
-    multipart.addBodyPart(attachment)
+    Starter.getListFiles(conf.getString("XML.outputFolder")).foreach({i =>
+      val attachment = new MimeBodyPart()
+      attachment.attachFile(i)
+      multipart.addBodyPart(attachment)
+    })
     generateMailMessage.setContent(multipart)
     System.out.println("Mail Session has been created successfully..")
     // Step3
