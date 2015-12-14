@@ -1,8 +1,18 @@
 import javax.mail._
 import javax.mail.internet._
 
+
 object Starter extends App {
 
+
+
+  //System.setProperty("simple-lib.whatever", "This value comes from a system property")
+
+  // Load our own config values from the default location, application.conf
+  //val parsedConfig = ConfigFactory.parseFile(new File("src/main/resources/application.conf"))
+
+
+  XMLChanger
   //generateAndSendEmail()
   ProfileTrans.trans("C:\\Users\\Администратор\\Desktop\\rmz — копия\\Профиль №1 0112068115 с 04 12 15 по 10 12 15.txt",
     "C:\\Users\\Администратор\\Desktop\\rmz — копия\\")
