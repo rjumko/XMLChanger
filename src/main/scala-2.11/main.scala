@@ -1,7 +1,6 @@
 import javax.mail._
 import javax.mail.internet._
 
-
 object Starter extends App {
 
   //generateAndSendEmail()
