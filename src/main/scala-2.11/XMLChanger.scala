@@ -82,7 +82,6 @@ object XMLChanger {
     val rr1 = XML.loadString((XML.loadString(p.format(xmlOut))).toString())
     XML.save(conf.getString("XML.outputFolder")+format+"_"+inn+"_"+
       date+"_"+messageNumber+"_"+innTEU+".xml", rr1, "windows-1251", true, null)
-
   }
 
   val conf = ConfigFactory.load()
@@ -91,10 +90,7 @@ object XMLChanger {
   getListFiles(conf.getString("XML.inputFolder")).foreach({i =>
     convert(XML.loadString(XML.loadFile(i).toString()));
     mv(i, conf.getString("XML.storedFolder")+i.split('\\').last)
-    println(i.split('\\').last)
   })
 
-  /*val xml = XML.loadString(XML.loadFile(conf.getString("XML.inputFolder") +
-    "80020_7722245108_20151208_33014_4200003300.xml").toString())
-  convert(xml)*/
+
 }
