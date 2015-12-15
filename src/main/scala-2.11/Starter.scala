@@ -12,19 +12,13 @@ object Starter extends App {
 
   val conf = ConfigFactory.load()
 
-  //System.setProperty("simple-lib.whatever", "This value comes from a system property")
-
-  // Load our own config values from the default location, application.conf
-  //val parsedConfig = ConfigFactory.parseFile(new File("src/main/resources/application.conf"))
-
-
   def getListFiles(directoryName: String): Array[String] =
     new File(directoryName).listFiles.map(_.getAbsolutePath)
 
   def mv(oldName: String, newName: String) = {
     Try(new File(oldName).renameTo(new File(newName))).getOrElse(false)}
 
-  //XMLChanger
+  XMLChanger
   generateAndSendEmail()
  /* ProfileTrans.trans("C:\\Users\\Администратор\\Desktop\\rmz — копия\\Профиль №1 0112068115 с 04 12 15 по 10 12 15.txt",
     "C:\\Users\\Администратор\\Desktop\\rmz — копия\\")*/
@@ -43,8 +37,8 @@ object Starter extends App {
     generateMailMessage.setFrom(new InternetAddress(conf.getString("MailSender.user")))
     generateMailMessage.addRecipient(Message.RecipientType.TO, new InternetAddress(conf.getString("MailSender.to").split(';').head))
     generateMailMessage.addRecipient(Message.RecipientType.CC, new InternetAddress(conf.getString("MailSender.to").split(';').last))
-    generateMailMessage.setSubject("Greetings from Crunchify..")
-    val emailBody = "Test email by Crunchify.com JavaMail API example. " + "<br><br> Regards, <br>Crunchify Admin"
+    generateMailMessage.setSubject("80020")
+    val emailBody = "Test email"
     val multipart = new MimeMultipart()
     Starter.getListFiles(conf.getString("XML.outputFolder")).foreach({i =>
       val attachment = new MimeBodyPart()
@@ -65,9 +59,7 @@ object Starter extends App {
       {
         case e: Exception => println("exception caught: " + e);
       }
-
   }
-
 }
 
 
