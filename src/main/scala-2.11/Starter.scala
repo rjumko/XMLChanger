@@ -23,14 +23,12 @@ object Starter extends App {
  /* ProfileTrans.trans("C:\\Users\\Администратор\\Desktop\\rmz — копия\\Профиль №1 0112068115 с 04 12 15 по 10 12 15.txt",
     "C:\\Users\\Администратор\\Desktop\\rmz — копия\\")*/
   def generateAndSendEmail() {
-    // Step1
     System.out.println("\n 1st ===> setup Mail Server Properties..")
     val mailServerProperties = System.getProperties()
     //mailServerProperties.put("mail.smtp.port", "587")
     mailServerProperties.put("mail.smtp.auth", "true")
     //mailServerProperties.put("mail.smtp.starttls.enable", "true")
     System.out.println("Mail Server Properties have been setup successfully..")
-    // Step2
     System.out.println("\n\n 2nd ===> get Mail Session..")
     val getMailSession = Session.getDefaultInstance(mailServerProperties, null)
     val generateMailMessage = new MimeMessage(getMailSession)
