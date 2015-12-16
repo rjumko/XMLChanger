@@ -18,6 +18,7 @@ libraryDependencies := {
         "com.typesafe" % "config" % "1.3.0",
         "com.typesafe.akka" %% "akka-actor" % "2.4.1",
         "javax.mail" % "javax.mail-api" % "1.5.4",
+        "commons-io" % "commons-io" % "2.4",
         "com.sun.mail" % "javax.mail" % "1.5.4")
     case _ =>
       // or just libraryDependencies.value if you don't depend on scala-swing
