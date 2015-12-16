@@ -8,7 +8,9 @@ import com.typesafe.config._
 
 object XMLChanger {
 
-  def convert(XMLfile: Elem): Unit = {
+  val conf = ConfigFactory.load
+
+  def converter(XMLfile: Elem): Unit = {
     val messageNumber = ((XMLfile \\ "message" \ "@number").text.toInt+10000).toString
     val format = "80020"
     val inn = "7722245108"
@@ -41,8 +43,7 @@ object XMLChanger {
     val result1 = XMLfile \\ "message" \ "area" \ "measuringpoint"
     var results:NodeSeq = null
     def searchPS(ps:String):NodeSeq = {
-      result1.foreach((e) =>
-        if ((e \ "@code").text == ps) return e \ "measuringchannel")
+      result1.foreach((e) => if ((e \ "@code").text == ps) return e \ "measuringchannel")
       results
     }
     def newPSNode(ps:(String, String)):Seq[Node] = {
@@ -74,13 +75,12 @@ object XMLChanger {
       date+"_"+messageNumber+"_"+innTEU+".xml", rr1, "windows-1251", true, null)
   }
 
-  val conf = ConfigFactory.load()
-  println("The answer is: " + conf.getInt("simple-app.answer"))
-
-  Utils.getListFiles(conf.getString("XML.inputFolder")).foreach({i =>
-    convert(XML.loadString(XML.loadFile(i).toString()))
-    Utils.mv(i, conf.getString("XML.storedFolder")+i.split('\\').last)
-  })
+  def convert = {
+    Utils.getListFiles(conf.getString("XML.inputFolder")).foreach({ i =>
+      converter(XML.loadString(XML.loadFile(i).toString()))
+      Utils.mv(i, conf.getString("XML.storedFolder") + i.split('\\').last)
+    })
+  }
 
 
 }

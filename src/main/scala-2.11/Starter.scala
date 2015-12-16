@@ -1,16 +1,16 @@
-import java.io.File
-import javax.mail._
-import javax.mail.internet._
-
-import com.typesafe.config.ConfigFactory
-
-import scala.util.Try
-import scala.xml.XML
+import akka.actor.ActorSystem
+import scala.concurrent.duration._
+import scala.concurrent.ExecutionContext.Implicits.global
 
 
 object Starter extends App {
-  XMLChanger
-  MailSender.generateAndSendEmail
+
+  val system = ActorSystem("MySystem")
+  system.scheduler.schedule(0 seconds, 5 minutes){
+    MailReceiver
+    XMLChanger.convert
+    MailSender.generateAndSendEmail
+  }
 }
 
 
