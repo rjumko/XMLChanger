@@ -2,13 +2,9 @@
   * Created by Администратор on 14.12.15.
   */
 
-import java.io.File
-
-import scala.util.Try
 import scala.xml._
 import scala.collection.immutable._
 import com.typesafe.config._
-import javax.mail
 
 object XMLChanger {
 
@@ -81,9 +77,9 @@ object XMLChanger {
   val conf = ConfigFactory.load()
   println("The answer is: " + conf.getInt("simple-app.answer"))
 
-  Starter.getListFiles(conf.getString("XML.inputFolder")).foreach({i =>
-    convert(XML.loadString(XML.loadFile(i).toString()));
-    Starter.mv(i, conf.getString("XML.storedFolder")+i.split('\\').last)
+  Utils.getListFiles(conf.getString("XML.inputFolder")).foreach({i =>
+    convert(XML.loadString(XML.loadFile(i).toString()))
+    Utils.mv(i, conf.getString("XML.storedFolder")+i.split('\\').last)
   })
 
 
