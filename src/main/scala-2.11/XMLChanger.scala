@@ -76,10 +76,12 @@ object XMLChanger {
   }
 
   def convert = {
-    Utils.getListFiles(conf.getString("XML.inputFolder")).foreach({ i =>
-      converter(XML.loadString(XML.loadFile(i).toString()))
-      Utils.mv(i, conf.getString("XML.storedFolder") + i.split('\\').last)
-    })
+    if (!Utils.getListFiles(conf.getString("XML.inputFolder")).isEmpty) {
+      Utils.getListFiles(conf.getString("XML.inputFolder")).foreach({ i =>
+        converter(XML.loadString(XML.loadFile(i).toString()))
+        Utils.mv(i, conf.getString("XML.storedFolder") + i.split('\\').last)
+      })
+    }
   }
 
 

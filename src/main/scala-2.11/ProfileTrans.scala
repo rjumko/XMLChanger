@@ -1,7 +1,9 @@
 /**
   * Created by Администратор on 11.12.15.
   */
-object ProfileTrans {
+object ProfileTrans{
+
+  //trans("C:\\Users\\Администратор\\Desktop\\узунгольская\\Профиль №1 0308071241 с 28 10 15 по 13 12 15.txt", "C:\\Users\\Администратор\\Desktop\\узунгольская\\")
 
   def trans(sourceFile: String, outputDir: String): Unit = {
     val t1 = "Профиль с "

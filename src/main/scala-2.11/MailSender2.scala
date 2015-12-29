@@ -1,3 +1,6 @@
+/**
+  * Created by Администратор on 29.12.15.
+  */
 import javax.mail.{Message, Session}
 import javax.mail.internet.{MimeBodyPart, MimeMultipart, InternetAddress, MimeMessage}
 
@@ -6,10 +9,10 @@ import com.typesafe.config.ConfigFactory
 /**
   * Created by Администратор on 16.12.15.
   */
-object MailSender {
+object MailSender2 {
   def generateAndSendEmail: Unit = {
     val conf = ConfigFactory.load()
-  
+
     if (Utils.getListFiles(conf.getString("XML.outputFolder")).isEmpty) return
     println("\n 1st ===> setup Mail Server Properties..")
     val mailServerProperties = System.getProperties
@@ -39,7 +42,7 @@ object MailSender {
       transport.close();
     }
     catch {
-        case e: Exception => println("exception caught: " + e);
+      case e: Exception => println("exception caught: " + e);
     }
     Utils.getListFiles(conf.getString("XML.outputFolder")).foreach({i =>
       Utils.mv(i, conf.getString("XML.storedFolder") + i.split('\\').last)})

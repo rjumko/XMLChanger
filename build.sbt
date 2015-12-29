@@ -4,7 +4,9 @@ version := "1.0"
 
 scalaVersion := "2.11.7"
 
-unmanagedBase := file("C:\\Users\\Администратор\\lib")
+cancelable in Global := true
+
+//unmanagedBase := file("C:\\Users\\Администратор\\lib")
 
 libraryDependencies := {
   CrossVersion.partialVersion(scalaVersion.value) match {
