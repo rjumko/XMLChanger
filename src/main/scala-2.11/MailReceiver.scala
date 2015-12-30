@@ -39,7 +39,6 @@ object MailReceiver
               case x:Multipart => x
               case _ => throw new RuntimeException("Unsupported type: Multipart")
             }
-            //
             val partsCount = mp.getCount
             for (j <- 0 to partsCount - 1) {
               val part = mp.getBodyPart(j)
