@@ -1,6 +1,8 @@
 /**
   * Created by Администратор on 29.12.15.
   */
+
+import javax.activation.{CommandMap, MailcapCommandMap}
 import javax.mail.{Message, Session}
 import javax.mail.internet.{MimeBodyPart, MimeMultipart, InternetAddress, MimeMessage}
 
@@ -12,6 +14,17 @@ import com.typesafe.config.ConfigFactory
 object MailSender2 {
   def generateAndSendEmail: Unit = {
     val conf = ConfigFactory.load()
+
+    //val mc = CommandMap.getDefaultCommandMap().asInstanceOf[MailcapCommandMap]
+    val mc:MailcapCommandMap = CommandMap.getDefaultCommandMap match {
+      case x:MailcapCommandMap => x
+      case _ => throw new RuntimeException("Unsupported type: MailcapCommandMap")
+    }
+    mc.addMailcap("text/html;; x-java-content-handler=com.sun.mail.handlers.text_html")
+    mc.addMailcap("text/xml;; x-java-content-handler=com.sun.mail.handlers.text_xml")
+    mc.addMailcap("text/plain;; x-java-content-handler=com.sun.mail.handlers.text_plain")
+    mc.addMailcap("multipart/*;; x-java-content-handler=com.sun.mail.handlers.multipart_mixed")
+    mc.addMailcap("message/rfc822;; x-java-content- handler=com.sun.mail.handlers.message_rfc822")
 
     if (Utils.getListFiles(conf.getString("XML.outputFolder")).isEmpty) return
     println("\n 1st ===> setup Mail Server Properties..")
