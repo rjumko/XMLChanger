@@ -71,8 +71,9 @@ object XMLChanger {
   }
 
   def convert() {
-    if (!Utils.getListFiles(conf.getString("XML.inputFolder")).isEmpty) {
-      Utils.getListFiles(conf.getString("XML.inputFolder")).foreach({ i =>
+    val listOfFiles = Utils.getListFiles(conf.getString("XML.inputFolder"))
+    if (!listOfFiles.isEmpty) {
+      listOfFiles.foreach({ i =>
         converter(XML.loadString(XML.loadFile(i).toString()))
         Utils.mv(i, conf.getString("XML.storedFolder") + i.split('\\').last)
       })
