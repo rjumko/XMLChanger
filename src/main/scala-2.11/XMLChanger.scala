@@ -9,6 +9,9 @@ import com.typesafe.config._
 object XMLChanger {
 
   val conf = ConfigFactory.load
+  val inputFolder = conf.getString("XML.inputFolder")
+  val outputFolder = conf.getString("XML.outputFolder")
+  val storedFolder = conf.getString("XML.storedFolder")
 
   def converter(XMLfile: Elem): Unit = {
     val messageNumber = ((XMLfile \\ "message" \ "@number").text.toInt+10000).toString
@@ -66,18 +69,17 @@ object XMLChanger {
       </message>
     val p = new scala.xml.PrettyPrinter(100, 0)
     val rr1 = XML.loadString(XML.loadString(p.format(xmlOut)).toString)
-    XML.save(conf.getString("XML.outputFolder")+format+"_"+inn+"_"+
+    XML.save(outputFolder+format+"_"+inn+"_"+
       date+"_"+messageNumber+"_"+innTEU+".xml", rr1, "windows-1251", xmlDecl = true, null)
   }
 
   def convert() {
-    val listOfFiles = Utils.getListFiles(conf.getString("XML.inputFolder"))
+    val listOfFiles = Utils.getListFiles(inputFolder)
     if (!listOfFiles.isEmpty) {
       listOfFiles.foreach({ i =>
         converter(XML.loadString(XML.loadFile(i).toString()))
-        Utils.mv(i, conf.getString("XML.storedFolder") + i.split('\\').last)
+        Utils.mv(i, storedFolder + i.split('\\').last)
       })
     }
   }
-
 }
