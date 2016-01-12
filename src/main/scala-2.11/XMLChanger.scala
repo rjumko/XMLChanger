@@ -6,9 +6,10 @@ import scala.xml._
 import scala.collection.immutable._
 import com.typesafe.config._
 
-object XMLChanger {
+object XMLChanger extends App{
 
   val conf = ConfigFactory.load
+  convert
 
   def converter(XMLfile: Elem): Unit = {
     val messageNumber = ((XMLfile \\ "message" \ "@number").text.toInt+10000).toString
@@ -41,14 +42,9 @@ object XMLChanger {
         "422080086108201" -> "ПС Клетьевая, 35/6 кВ, ОРУ-35 кВ, ввод Т-2",
         "422080086214101" -> "ПС Клетьевая, 35/6 кВ, РУ-6 кВ, ф.яч.17")
     val result1 = XMLfile \\ "message" \ "area" \ "measuringpoint"
-    var results:NodeSeq = null
-    def searchPS(ps:String):NodeSeq = {
-      result1.foreach((e) => if ((e \ "@code").text == ps) return e \ "measuringchannel")
-      results
-    }
     def newPSNode(ps:(String, String)):Seq[Node] = {
       <measuringpoint code={ps._1} name={ps._2}>
-        {searchPS(ps._1)}
+        {result1.filter(e => (e \ "@code").text == ps._1 ) \ "measuringchannel"}
       </measuringpoint>
     }
     val xmlOut =
@@ -70,12 +66,12 @@ object XMLChanger {
         </area>
       </message>
     val p = new scala.xml.PrettyPrinter(100, 0)
-    val rr1 = XML.loadString((XML.loadString(p.format(xmlOut))).toString())
+    val rr1 = XML.loadString(XML.loadString(p.format(xmlOut)).toString)
     XML.save(conf.getString("XML.outputFolder")+format+"_"+inn+"_"+
-      date+"_"+messageNumber+"_"+innTEU+".xml", rr1, "windows-1251", true, null)
+      date+"_"+messageNumber+"_"+innTEU+".xml", rr1, "windows-1251", xmlDecl = true, null)
   }
 
-  def convert = {
+  def convert() {
     if (!Utils.getListFiles(conf.getString("XML.inputFolder")).isEmpty) {
       Utils.getListFiles(conf.getString("XML.inputFolder")).foreach({ i =>
         converter(XML.loadString(XML.loadFile(i).toString()))

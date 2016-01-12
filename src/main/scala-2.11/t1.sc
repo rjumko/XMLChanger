@@ -1,57 +1,29 @@
+import scala.collection.immutable.Seq
 import scala.math._
 import scala.runtime.RichInt
 import BigInt._
+import scala.xml._
 import util._
 
-/*val j:BigInt = 123
-j.toDouble
-(j /% 7)._2
-pow(9, 2)
-BigInt.probablePrime(10, scala.util.Random).toByteArray
-
-"helonloo".distinct
-
-56.toBinaryString
-val y: RichInt = 66
-y.toHexString
-y.toBinaryString
-
-val t = sqrt(3)
-3 - pow(t, 2)
-10 max 6
-max(66, 87)
-
-BigInt(2)
-val y1 = probablePrime(100 ,Random).toString(36)
-y1.last
-y1(0)
-y1 drop 5
-//30 /% 7*/
-
-
-
-
-
-
-
-
-
-
-  val fileLines = io.Source.fromFile("C:\\Users\\Администратор\\Desktop\\узунгольская\\Профиль №1 0307071798 с 28 10 15 по 13 12 15.txt", "windows-1251").getLines.toList
-  val meterNumber = fileLines(1).split(" ")(2)
-  val numPattern = "\\d\\d\\.\\d\\d\\.\\d\\d.*"
-  val n1 = fileLines.filter(i => i.matches(numPattern))
-    .map(i => i.replaceFirst("(\\d\\d\\.\\d\\d\\.\\d\\d\\t)", "$1 "))
-    .map(i => i.replaceAll("000,0000", "0"))
-    .map(i => i.replaceAll("000,", "0,"))
-    .map(i => i.replaceAll("00([1-9]),", "$1,"))
-    .map(i => i.replaceAll("0([1-9][1-9]),", "$1,"))
-    .map(i => i.replaceAll("(\\d\\d:\\d\\d)-(\\d\\d:\\d\\d)", "$1 - $2"))
-  /*.zipWithIndex.map(i =>
-  if (i._2 % 2 == 0) i._1
-  else ((i._1).replaceAll("\\d\\d\\.\\d\\d\\.\\d\\d", "")))*/
-  val b4 = n1.groupBy(_.take(8))
-println(b4)
-  //val b5 = n1.grouped(48).toList
-
-
+val XMLfile = XML.loadFile("C:\\Stored\\80020_7722245108_20151213_33077_4200003300.xml")
+val result1 = XMLfile \\ "message" \ "area" \ "measuringpoint"
+def newPSNode(ps:(String, String)):Seq[Node] = {
+  <measuringpoint code={ps._1} name={ps._2}>
+    {result1.filter(e => (e \ "@code").text == ps._1 ) \ "measuringchannel"}
+  </measuringpoint>
+}
+val a = "422070134107101" -> "ПС \"Распадская-3\", 110/35/6 кВ, ОРУ-110 кВ, ввод Т-1"
+val xmlOut =
+  <message class="80020" number="jk" version="2">
+    {XMLfile \\ "datetime"}
+    <sender>
+      <inn>7722245108</inn>
+      <name>ООО {scala.xml.Unparsed(""""Мечел-Энерго"""")}</name>
+    </sender>
+    <area>
+      <inn>4200003301</inn>
+      <name>МЕЧЕЛ-ЭНЕРГО (Томусинское энергоуправление)-ФСК ЕЭС МЭС Сибири (сети Кемеровской обл.)</name>
+      {newPSNode(a)}
+    </area>
+  </message>
+//result1.filter(e => (e \ "@code").text == a._1 )
