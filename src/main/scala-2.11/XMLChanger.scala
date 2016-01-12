@@ -6,10 +6,9 @@ import scala.xml._
 import scala.collection.immutable._
 import com.typesafe.config._
 
-object XMLChanger extends App{
+object XMLChanger {
 
   val conf = ConfigFactory.load
-  convert
 
   def converter(XMLfile: Elem): Unit = {
     val messageNumber = ((XMLfile \\ "message" \ "@number").text.toInt+10000).toString
@@ -79,6 +78,5 @@ object XMLChanger extends App{
       })
     }
   }
-
 
 }
