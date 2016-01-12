@@ -1,7 +1,7 @@
 /**
   * Created by Администратор on 11.12.15.
   */
-object ProfileTrans extends App{
+object ProfileTrans{
 
   trans("C:\\Users\\Администратор\\Desktop\\узунгольская\\Профиль №1 0307071798 с 28 10 15 по 13 12 15.txt", "C:\\Users\\Администратор\\Desktop\\узунгольская\\")
 

@@ -13,7 +13,7 @@ libraryDependencies := {
         "org.scala-lang.modules" % "scala-xml_2.11" % "1.0.5",
         "org.scala-lang" % "scala-compiler" % scalaVersion.value,
         "com.typesafe" % "config" % "1.3.0",
-        "com.typesafe.akka" %% "akka-actor" % "2.3.14",
+        "com.typesafe.akka" %% "akka-actor" % "2.4.1",
         "javax.mail" % "javax.mail-api" % "1.5.4",
         "commons-io" % "commons-io" % "2.4",
         "com.sun.mail" % "javax.mail" % "1.5.4")
