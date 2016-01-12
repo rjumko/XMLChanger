@@ -14,7 +14,7 @@ object Starter extends App {
     println("start system")
     MailReceiver.checkMail()
     XMLChanger.convert
-    MailSender2.generateAndSendEmail
+    MailSender.generateAndSendEmail
   }
 }
 
