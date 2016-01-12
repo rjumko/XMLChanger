@@ -5,8 +5,9 @@ import BigInt._
 import scala.xml._
 import util._
 
-val XMLfile = XML.loadFile("C:\\Stored\\80020_7722245108_20151213_33077_4200003300.xml")
-val result1 = XMLfile \\ "message" \ "area" \ "measuringpoint"
+val XMLfile = XML.loadFile("C:\\Stored\\80020_7722245108_20151229_33254_4200003300.xml")
+val result1 = XMLfile \\ "message" \\ "value"
+println(result1.length)
 def newPSNode(ps:(String, String)):Seq[Node] = {
   <measuringpoint code={ps._1} name={ps._2}>
     {result1.filter(e => (e \ "@code").text == ps._1 ) \ "measuringchannel"}

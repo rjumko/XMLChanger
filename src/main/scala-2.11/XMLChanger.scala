@@ -14,6 +14,8 @@ object XMLChanger {
   val storedFolder = conf.getString("XML.storedFolder")
 
   def converter(XMLfile: Elem): Unit = {
+    val validation = (XMLfile \\ "message" \\ "value").length
+    if (validation != 4224) return
     val messageNumber = ((XMLfile \\ "message" \ "@number").text.toInt+10000).toString
     val format = "80020"
     val inn = "7722245108"

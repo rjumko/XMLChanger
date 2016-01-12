@@ -10,10 +10,6 @@ import org.apache.commons.io.{FilenameUtils, IOUtils}
 
 object MailReceiver
 {
-
-  println("Start mail check1")
-  //checkMail()
-
   def checkMail() {
     val conf = ConfigFactory.load()
     println("Start mail check2")
@@ -29,7 +25,7 @@ object MailReceiver
       store.connect(host, port, username, password)
       val folder = store.getFolder(conf.getString("MailReceiver.INBOX"))
       folder.open(Folder.READ_WRITE)
-      val messages = folder.getMessages()
+      val messages = folder.getMessages
       for (message <- messages) {
         if (message.getFrom.head == new InternetAddress(conf.getString("MailReceiver.from"))) {
           if (message.isMimeType("multipart/*")) {
