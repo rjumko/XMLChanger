@@ -31,6 +31,7 @@ object MailReceiver
           if (message.isMimeType("multipart/*")) {
             println("mail check3")
             val mp:Multipart = message.getContent.asInstanceOf[Multipart]
+			println("mail check4")
             val partsCount = mp.getCount
             for (j <- 0 to partsCount - 1) {
               val part = mp.getBodyPart(j)
