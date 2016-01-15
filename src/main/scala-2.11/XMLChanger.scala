@@ -5,10 +5,11 @@
 import scala.xml._
 import scala.collection.immutable._
 import com.typesafe.config._
+import java.io.File
 
 object XMLChanger {
 
-  val conf = ConfigFactory.load
+  val conf =  ConfigFactory.parseFile(new File("./application.conf"))
   val inputFolder = conf.getString("XML.inputFolder")
   val outputFolder = conf.getString("XML.outputFolder")
   val storedFolder = conf.getString("XML.storedFolder")
@@ -80,7 +81,7 @@ object XMLChanger {
     if (!listOfFiles.isEmpty) {
       listOfFiles.foreach({ i =>
         converter(XML.loadString(XML.loadFile(i).toString()))
-        Utils.mv(i, storedFolder + i.split('\\').last)
+        Utils.mv(i, storedFolder + i.split(File.separatorChar).last)
       })
     }
   }

@@ -10,8 +10,12 @@ import org.apache.commons.io.{FilenameUtils, IOUtils}
 
 object MailReceiver
 {
+
+  val conf =  ConfigFactory.parseFile(new File("./application.conf"))
+
   def checkMail() {
-    val conf = ConfigFactory.load()
+    //val conf = ConfigFactory.load("\\aplication.conf")
+	
     println("Start mail check2")
     val host = conf.getString("MailReceiver.host")
     val port = conf.getInt("MailReceiver.port")
@@ -56,7 +60,6 @@ object MailReceiver
   }
 
   def saveAttach(fileName:String, inputStream:InputStream) {
-    val conf = ConfigFactory.load()
     try {
       val f = new File(conf.getString("MailReceiver.inboxFolder"), fileName)
       val os = new FileOutputStream(f)
@@ -69,7 +72,6 @@ object MailReceiver
   }
 
   def isFileApproaches(fileName:String):Boolean={
-    val conf = ConfigFactory.load()
     fileName.startsWith(conf.getString("MailReceiver.XMLSign")) &&
       ("xml" == FilenameUtils.getExtension(fileName).toLowerCase())
   }

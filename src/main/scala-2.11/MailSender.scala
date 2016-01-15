@@ -1,6 +1,7 @@
 import javax.activation.{CommandMap, MailcapCommandMap}
 import javax.mail.{Message, Session}
 import javax.mail.internet.{MimeBodyPart, MimeMultipart, InternetAddress, MimeMessage}
+import java.io.File
 
 import com.typesafe.config.ConfigFactory
 
@@ -8,8 +9,8 @@ import com.typesafe.config.ConfigFactory
   * Created by Администратор on 16.12.15.
   */
 object MailSender {
-  def generateAndSendEmail: Unit = {
-    val conf = ConfigFactory.load()
+  def generateAndSendEmail(): Unit = {
+    val conf =  ConfigFactory.parseFile(new File("./application.conf"))
 
     //val mc = CommandMap.getDefaultCommandMap().asInstanceOf[MailcapCommandMap]
     val mc:MailcapCommandMap = CommandMap.getDefaultCommandMap match {
@@ -54,7 +55,7 @@ object MailSender {
       case e: Exception => println("exception caught: " + e);
     }
     Utils.getListFiles(conf.getString("XML.outputFolder")).foreach({i =>
-      Utils.mv(i, conf.getString("XML.storedFolder") + i.split('\\').last)})
+      Utils.mv(i, conf.getString("XML.storedFolder") + i.split(File.separatorChar).last)})
   }
 
 }
