@@ -10,7 +10,7 @@ import com.typesafe.config.ConfigFactory
   */
 object MailSender {
   def generateAndSendEmail(): Unit = {
-    val conf =  ConfigFactory.parseFile(new File("./application.conf"))
+    val conf = ConfigFactory.parseFile(new File("./application.conf"))
 
     //val mc = CommandMap.getDefaultCommandMap().asInstanceOf[MailcapCommandMap]
     val mc:MailcapCommandMap = CommandMap.getDefaultCommandMap match {
