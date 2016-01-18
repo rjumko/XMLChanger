@@ -3,16 +3,22 @@ import javax.mail.{Message, Session}
 import javax.mail.internet.{MimeBodyPart, MimeMultipart, InternetAddress, MimeMessage}
 import java.io.File
 
-import com.typesafe.config.ConfigFactory
+import com.typesafe.scalalogging.Logger
+import org.slf4j.LoggerFactory
 
-/**
-  * Created by Администратор on 16.12.15.
-  */
 object MailSender {
 
-  val conf = ConfigFactory.parseFile(new File("./application.conf"))
+  val logger = Logger(LoggerFactory.getLogger(this.getClass))
+  val conf = Utils.conf
+  val sender = conf.getString("MailSender.user")
+  val sendTo = conf.getString("MailSender.to")
+  val host = conf.getString("MailSender.host")
+  val user = conf.getString("MailSender.user")
+  val password = conf.getString("MailSender.password")
+  val subject = "80020"
 
   def start(): Unit = {
+    logger.info(s"mail sender start")
     val outputFolder = conf.getString("XML.outputFolder")
     val storedFolder = conf.getString("XML.storedFolder")
     val attachFiles = Utils.getListFiles(outputFolder)
@@ -23,11 +29,7 @@ object MailSender {
   }
 
   def generateAndSendEmail(attachFiles: Array[String]): Unit = {
-    val sender = conf.getString("MailSender.user")
-    val sendTo = conf.getString("MailSender.to")
-    val host = conf.getString("MailSender.host")
-    val user = conf.getString("MailSender.user")
-    val password = conf.getString("MailSender.password")
+
     val mc:MailcapCommandMap = CommandMap.getDefaultCommandMap match {
       case x:MailcapCommandMap => x
       case _ => throw new RuntimeException("Unsupported type: MailcapCommandMap")
@@ -38,35 +40,35 @@ object MailSender {
     mc.addMailcap("multipart/*;; x-java-content-handler=com.sun.mail.handlers.multipart_mixed")
     mc.addMailcap("message/rfc822;; x-java-content- handler=com.sun.mail.handlers.message_rfc822")
 
-    println("\n 1st ===> setup Mail Server Properties..")
+    logger.info(s"1st ===> setup Mail Server Properties..")
     val mailServerProperties = System.getProperties
     mailServerProperties.put("mail.smtp.auth", "true")
-    println("Mail Server Properties have been setup successfully..")
-    println("\n\n 2nd ===> get Mail Session..")
+    logger.info(s"mail Server Properties have been setup successfully..")
+    logger.info("2nd ===> get Mail Session..")
     val getMailSession = Session.getDefaultInstance(mailServerProperties, null)
     val generateMailMessage = new MimeMessage(getMailSession)
     generateMailMessage.setFrom(new InternetAddress(sender))
     generateMailMessage.addRecipient(Message.RecipientType.TO, new InternetAddress(sendTo.split(';').head))
     generateMailMessage.addRecipient(Message.RecipientType.CC, new InternetAddress(sendTo.split(';').last))
-    generateMailMessage.setSubject("80020")
+    generateMailMessage.setSubject(subject)
     val multipart = new MimeMultipart()
     attachFiles.foreach({i =>
+      logger.info(s"add attach $i")
       val attachment = new MimeBodyPart()
       attachment.attachFile(i)
       multipart.addBodyPart(attachment)
     })
     generateMailMessage.setContent(multipart)
-    System.out.println("Mail Session has been created successfully..")
-    System.out.println("\n\n 3rd ===> Get Session and Send mail")
+    logger.info(s"mail Session has been created successfully..")
+    logger.info(s"3rd ===> Get Session and Send mail")
     try {
       val transport = getMailSession.getTransport("smtp")
       transport.connect(host, user, password)
       transport.sendMessage(generateMailMessage, generateMailMessage.getAllRecipients)
       transport.close()
+      logger.info(s"message sended succesful")
     }
-    catch {
-      case e: Exception => println("exception caught: " + e);
-    }
+    catch{ case e: Exception => logger.error(s"mail send error: $e")}
   }
 
 }

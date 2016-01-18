@@ -2,14 +2,17 @@
   * Created by Администратор on 14.12.15.
   */
 
+import com.typesafe.scalalogging.Logger
+import org.slf4j.LoggerFactory
+
 import scala.xml._
 import scala.collection.immutable._
-import com.typesafe.config._
 import java.io.File
 
 object XMLChanger {
 
-  val conf =  ConfigFactory.parseFile(new File("./application.conf"))
+  val logger = Logger(LoggerFactory.getLogger(this.getClass))
+  val conf = Utils.conf
   val inputFolder = conf.getString("XML.inputFolder")
   val outputFolder = conf.getString("XML.outputFolder")
   val storedFolder = conf.getString("XML.storedFolder")
@@ -72,11 +75,14 @@ object XMLChanger {
       </message>
     val p = new scala.xml.PrettyPrinter(100, 0)
     val rr1 = XML.loadString(XML.loadString(p.format(xmlOut)).toString)
-    XML.save(outputFolder+format+"_"+inn+"_"+
-      date+"_"+messageNumber+"_"+innTEU+".xml", rr1, "windows-1251", xmlDecl = true, null)
+    val XMLFileName = outputFolder+format+"_"+inn+"_"+
+      date+"_"+messageNumber+"_"+innTEU+".xml"
+    XML.save(XMLFileName, rr1, "windows-1251", xmlDecl = true, null)
+    logger.info(s"XML file $XMLFileName saved")
   }
 
   def convert() {
+    logger.info(s"XML converter starter")
     val listOfFiles = Utils.getListFiles(inputFolder)
     if (!listOfFiles.isEmpty) {
       listOfFiles.foreach({ i =>

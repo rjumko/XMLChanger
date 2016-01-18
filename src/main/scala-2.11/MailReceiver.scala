@@ -6,36 +6,39 @@ import javax.mail.Session._
 import javax.mail._
 import javax.mail.internet.InternetAddress
 import com.typesafe.config._
+import com.typesafe.scalalogging.Logger
 import org.apache.commons.io.{FilenameUtils, IOUtils}
+import org.slf4j.LoggerFactory
 
 object MailReceiver
 {
 
-  val conf =  ConfigFactory.parseFile(new File("./application.conf"))
+  val conf = Utils.conf
+  val logger = Logger(LoggerFactory.getLogger(this.getClass))
+  val host = conf.getString("MailReceiver.host")
+  val port = conf.getInt("MailReceiver.port")
+  val username = conf.getString("MailReceiver.user")
+  val password = conf.getString("MailReceiver.password")
+  val protocol = conf.getString("MailReceiver.protocol")
+  val sender = new InternetAddress(conf.getString("MailReceiver.from"))
+  val session = getDefaultInstance(new Properties(), null)
+  val XMLSign = conf.getString("MailReceiver.XMLSign")
+  val inbox = conf.getString("MailReceiver.INBOX")
 
   def checkMail() {
-    //val conf = ConfigFactory.load("\\aplication.conf")
-	
-    println("Start mail check2")
-    val host = conf.getString("MailReceiver.host")
-    val port = conf.getInt("MailReceiver.port")
-    val username = conf.getString("MailReceiver.user")
-    val password = conf.getString("MailReceiver.password")
-    val protocol = conf.getString("MailReceiver.protocol")
-    val session = getDefaultInstance(new Properties(), null)
-
+    logger.info(s"service started")
     try{
       val store = session.getStore(protocol)
       store.connect(host, port, username, password)
-      val folder = store.getFolder(conf.getString("MailReceiver.INBOX"))
+      val folder = store.getFolder(inbox)
       folder.open(Folder.READ_WRITE)
       val messages = folder.getMessages
       for (message <- messages) {
-        if (message.getFrom.head == new InternetAddress(conf.getString("MailReceiver.from"))) {
+        if (message.getFrom.head == sender) {
+          logger.info(s"check for attachments")
           if (message.isMimeType("multipart/*")) {
-            println("mail check3")
+            logger.info(s"get attachments")
             val mp:Multipart = message.getContent.asInstanceOf[Multipart]
-			println("mail check4")
             val partsCount = mp.getCount
             for (j <- 0 to partsCount - 1) {
               val part = mp.getBodyPart(j)
@@ -48,14 +51,14 @@ object MailReceiver
               }
             }
           }
-        }
+        } else logger.info(s"unsuitable sender $sender")
         message.setFlag(Flags.Flag.DELETED, true)
       }
       folder.close(true)
       store.close()
     }
     catch {
-      case e: Exception => println("exception caught: " + e)
+      case e: Exception => logger.error(s"receiv mail error: $e")
     }
   }
 
@@ -64,15 +67,16 @@ object MailReceiver
       val f = new File(conf.getString("MailReceiver.inboxFolder"), fileName)
       val os = new FileOutputStream(f)
       IOUtils.copy(inputStream, os)
-      println("mail check4")
+      logger.info(s"save file $fileName OK")
     }
     catch {
-      case e: Exception => println("exception caught: " + e)
+      case e: Exception => logger.error(s"save file error: $e")
     }
   }
 
   def isFileApproaches(fileName:String):Boolean={
-    fileName.startsWith(conf.getString("MailReceiver.XMLSign")) &&
+    logger.info(s"chek for XML signature")
+    fileName.startsWith(XMLSign) &&
       ("xml" == FilenameUtils.getExtension(fileName).toLowerCase())
   }
 }
