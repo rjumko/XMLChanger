@@ -11,6 +11,8 @@ import scala.concurrent.ExecutionContext.Implicits.global
 object Starter extends App {
 
   val system = ActorSystem("MySystem")
+  val URL = "./logback.xml"
+  System.setProperty("logback.configurationFile", URL)
   val logger = Logger(LoggerFactory.getLogger(this.getClass))
   system.scheduler.schedule(0 seconds, 5 minutes){
     logger.info(s"service started")

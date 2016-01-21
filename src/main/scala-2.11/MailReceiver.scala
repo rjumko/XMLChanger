@@ -36,21 +36,22 @@ object MailReceiver
       for (message <- messages) {
         if (message.getFrom.head == sender) {
           logger.info(s"check for attachments")
-          if (message.isMimeType("multipart/*")) {
-            logger.info(s"get attachments")
-            val mp:Multipart = message.getContent.asInstanceOf[Multipart]
-            val partsCount = mp.getCount
-            for (j <- 0 to partsCount - 1) {
-              val part = mp.getBodyPart(j)
-              val disposition = part.getDisposition
-              if ((disposition != null) && ((disposition == "attachment") || (disposition== "inline"))) {
-                val fileName = part.getFileName
-                if (isFileApproaches(fileName)) {
-                  saveAttach(fileName, part.getInputStream)
+          if (message.isMimeType("multipart/*"))
+            if (message.getContent.isInstanceOf[Multipart]) {
+              logger.info(s"get attachments")
+              val mp: Multipart = message.getContent.asInstanceOf[Multipart]
+              val partsCount = mp.getCount
+              for (j <- 0 to partsCount - 1) {
+                val part = mp.getBodyPart(j)
+                val disposition = part.getDisposition
+                if ((disposition != null) && ((disposition == "attachment") || (disposition== "inline"))) {
+                  val fileName = part.getFileName
+                  if (isFileApproaches(fileName)) {
+                    saveAttach(fileName, part.getInputStream)
+                  }
                 }
               }
             }
-          }
         } else logger.info(s"unsuitable sender $sender")
         message.setFlag(Flags.Flag.DELETED, true)
       }

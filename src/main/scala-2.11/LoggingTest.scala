@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory
 
 
 
-object LoggingTest extends App{
+object LoggingTest{
 
   val logger = Logger(LoggerFactory.getLogger(this.getClass))
   println(System.getProperties)
