@@ -9,6 +9,7 @@ import com.typesafe.config._
 import com.typesafe.scalalogging.Logger
 import org.apache.commons.io.{FilenameUtils, IOUtils}
 import org.slf4j.LoggerFactory
+import javax.activation.{CommandMap, MailcapCommandMap}
 
 object MailReceiver
 {
@@ -26,6 +27,18 @@ object MailReceiver
   val inbox = conf.getString("MailReceiver.INBOX")
 
   def checkMail() {
+  
+    val mc:MailcapCommandMap = CommandMap.getDefaultCommandMap match {
+      case x:MailcapCommandMap => x
+      case _ => throw new RuntimeException("Unsupported type: MailcapCommandMap")
+    }
+    mc.addMailcap("text/html;; x-java-content-handler=com.sun.mail.handlers.text_html")
+    mc.addMailcap("text/xml;; x-java-content-handler=com.sun.mail.handlers.text_xml")
+    mc.addMailcap("text/plain;; x-java-content-handler=com.sun.mail.handlers.text_plain")
+    mc.addMailcap("multipart/*;; x-java-content-handler=com.sun.mail.handlers.multipart_mixed")
+    mc.addMailcap("message/rfc822;; x-java-content- handler=com.sun.mail.handlers.message_rfc822")
+	CommandMap.setDefaultCommandMap(mc)
+	  
     logger.info(s"service started")
     try{
       val store = session.getStore(protocol)
@@ -51,6 +64,7 @@ object MailReceiver
                     }
                   }
                 }
+			  case mp: String => logger.info(s"mp: $mp")
               case _ => logger.info(s"receiv mail error: mail has no attachments")
             }
         } else logger.info(s"unsuitable sender $sender")
