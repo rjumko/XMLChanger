@@ -1,9 +1,11 @@
 /**
   * Created by Администратор on 11.12.15.
   */
-object ProfileTrans{
+import java.io.File
 
-  trans("C:\\Users\\Администратор\\Desktop\\узунгольская\\Профиль №1 0307071798 с 28 10 15 по 13 12 15.txt", "C:\\Users\\Администратор\\Desktop\\узунгольская\\")
+object ProfileTrans extends App{
+
+  trans("D:\\raspad\\Профиль №1 0302070122 с 30 03 16 по 20 04 16.txt", "D:\\raspad\\")
 
   def trans(sourceFile: String, outputDir: String): Unit = {
     val t1 = "Профиль с "
@@ -29,7 +31,9 @@ object ProfileTrans{
       ).mkString("\r\n")
       val date = i._1
       val header = List(t1 + date + t1_1 + date, t2 + meterNumber, t3, t4, t5).mkString("\r\n")
-      val n = scala.tools.nsc.io.File(outputDir+"Профиль счетчика № "+meterNumber+" за "+date+".txt")
+      val dir = new File(outputDir+meterNumber)
+      dir.mkdir()
+      val n = scala.tools.nsc.io.File(outputDir+meterNumber+"\\"+"Профиль счетчика № "+meterNumber+" за "+date+".txt")(scala.io.Codec.apply("windows-1251"))
       n.writeAll(header + "\r\n" + dateProfile)
     })
   }
